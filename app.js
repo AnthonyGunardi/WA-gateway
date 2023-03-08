@@ -9,14 +9,6 @@ const PORT = 5003;
 const multer = require("multer");
 const upload = multer();
 
-const options = {
-  key: fs.readFileSync('../ssl/privateKey.pem'),
-  cert: fs.readFileSync('../ssl/anthonygunardi_com_cert.pem'),
-};
-const server = https.createServer(
-  options, 
-  app);
-
 const client = new Client({
   authStrategy: new LocalAuth(),
 });
@@ -29,6 +21,14 @@ client.on("ready", () => {
   var app = express();
   app.use(cors());
   app.use(upload.array());
+
+  const options = {
+    key: fs.readFileSync('../ssl/privateKey.pem'),
+    cert: fs.readFileSync('../ssl/anthonygunardi_com_cert.pem'),
+  };
+  const server = https.createServer(
+    options, 
+    app);
 
   app.post("/api/send-message", (req, res) => {
     const { number, message } = req.body;
